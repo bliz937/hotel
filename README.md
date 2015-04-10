@@ -9,3 +9,5 @@ Http server, mysql and php.
 In /res/db/ there is the database used for this project.
 Simply import into a mysql database.
 Change the relevant authentication settings in /res/php/MySQL.php on the first few lines.
+
+Change lines 40 - 43 in /res/html/footer.html and lines 7 & 9 in /res/html/head.html
