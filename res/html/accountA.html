@@ -1,0 +1,74 @@
+<div class="jumbotron">
+    <h1 style="text-align:center;">Account history</h1>
+  
+    <form class="form-horizontal">
+        <fieldset>
+            <div class="form-group">
+                <label for="select" class="col-lg-2 col-lg-offset-3 control-label">Client</label>
+                <div class="col-lg-3">
+                    <select class="form-control" id="select" onchange="loadXMLDoc()">
+                        
+                      <?php
+                        foreach($clients as $cln) {
+                            echo '<option id="'.$cln->ID.'">'.$cln->ns().'</option>';
+                        }
+
+                        ?>
+                        
+                    </select>                    
+                </div>
+            </div>
+        </fieldset>
+    </form>
+    
+    <table class="table table-striped table-hover ">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Suite</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Cancelled</th>
+                <th>Assisted by</th>
+                <th>Checked out</th>
+            </tr>
+          </thead>
+        <tbody id="clientRecord"></tbody>
+    </table> 
+    
+    <div id="error"></div>
+    
+</div>
+
+<script>
+        function loadXMLDoc() {
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+          xmlhttp=new XMLHttpRequest();
+        }
+        else {
+          xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                var res = xmlhttp.responseText;                        
+                
+                if(res.substring(0,4) == "ERROR") {
+                    document.getElementById("error").innerHTML = "<h3 style='text-align:center'>An error occured</h3><p>" + res.substring(5) + "</p>";
+                } else {                    
+                    document.getElementById("clientRecord").innerHTML = res;
+                }
+            }
+        }
+        
+        var e = document.getElementById("select")
+        var id = e.options[e.selectedIndex].id;
+        
+        xmlhttp.open("POST","account.php",true);
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlhttp.send("id=" + id);
+    }
+    
+    window.onload = loadXMLDoc();
+</script>

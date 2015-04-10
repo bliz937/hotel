@@ -1,0 +1,56 @@
+<?php
+
+require './res/php/suite.php';
+require './res/php/MySQL.php';
+
+$suites = availableSuites();
+$standard = $suites["Standard"];
+$luxary = $suites["Luxary"];
+
+echo '
+<table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="col-lg-2">Suite</th>
+                <th class="col-lg-7 hidden-xs">Description</th>
+                <th class="col-lg-2 hidden-xs">Price per night</th>
+                <th class="col-lg-1">Available</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <a href="?suite=lux">Luxurious</a>
+                </td>
+                <td style="overflow:auto;" class="hidden-xs">
+                    This is our luxurious suite. We have '.$luxary->AVAILABLE.' of them.<br>
+                    They have 24/7 room service with a mini-bar stocked with drinks.<br>
+                    We have a phone with unlimited call time to any number.<br>
+                </td>
+                <td style="overflow:auto;" class="hidden-xs">
+                    R'.$luxary->COSTPERN.'
+                </td>
+                <td>
+                    <span id="LuxSpan">'.$luxary->OPEN.'</span>
+                </td>
+            </tr>
+                
+            <tr>
+                <td>
+                    <a href="?suite=sta">Standard</a>
+                </td>
+                <td style="overflow:auto;" class="hidden-xs">
+                    This is our standard suite. We have '.$standard->AVAILABLE.' of them.<br>
+                    They have 24/5 room service with a mini-bar stocked with drinks.<br>
+                    We have a phone that can call any number.<br>
+                </td>
+                <td style="overflow:auto;" class="hidden-xs">
+                    R'.$standard->COSTPERN.'
+                </td>
+                <td>
+                    <span id="StaSpan">'.$standard->OPEN.'</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>';
+?>

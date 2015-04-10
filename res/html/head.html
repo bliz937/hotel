@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="description" content="Group 7 Software Engineering project">        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link href="http://172.16.38.44/~shev/hotel/css/bootstrap.css" rel="stylesheet">
+
+        <link href="http://172.16.38.44/~shev/hotel/res/icon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+    </head>
+    <body>
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                  <a href="#" class="navbar-brand">Group 7 Hotel</a>
+                  <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                </div>
+            <div class="navbar-collapse collapse" id="navbar-main">
+              <ul class="nav navbar-nav">
+                <li>
+                    <a href="http://172.16.38.44/~shev/hotel/">Home</a>
+                </li>
+                  
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Suites<span class="caret"></span></a>
+                  <ul class="dropdown-menu" aria-labelledby="themes">
+                    <li><a href="suites.php">Overview</a></li>
+                    <li class="divider"></li>
+                    <li><a href="suites.php?suite=sta">Standard</a></li>
+                    <li><a href="suites.php?suite=lux">Luxary</a></li>
+                  </ul>
+                </li>
+            
+                
+          <?php navbar(); ?>
+
+            </div>
+          </div>
+        </div>
+        
+        <div class="container" style="padding-top:60px;">

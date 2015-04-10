@@ -1,0 +1,101 @@
+<div class="jumbotron">
+    <h1 style="text-align:center">Checkout</h1><br>
+    
+    <?php if($_SESSION["userType"] === "agent") { require './res/html/checkoutA.html'; } ?>
+     
+    <table class="table table-striped table-hover ">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Suite</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Checkout</th>
+            </tr>
+          </thead>
+        <tbody id="booknTable"></tbody>
+        
+        <?php
+        if($_SESSION["userType"] === "client") {
+            foreach($bookings as $bkn) {            
+                echo '
+                <tr id="'.$bkn->BOOKID.'">
+                    <td>'. $bkn->ID .'</td>
+                    <td>'. $bkn->SUITE->NAME .'</td>
+                    <td>'. $bkn->STARTDATE .'</td>
+                    <td>'. $bkn->ENDDATE .'</td>
+                    <td><button class="btn btn-warning" onclick="deleteBook('.$bkn->BOOKID.')" id="btn'.$bkn->BOOKID.'">Checkout</button></td>
+                </tr>';
+            }
+        }
+
+        ?>
+        
+    </table> 
+    
+    <div id="error"></div>
+    
+</div>
+
+<script>
+    function loadUserBook() {
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+          xmlhttp=new XMLHttpRequest();
+        }
+        else {
+          xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                var res = xmlhttp.responseText;                            
+                
+                if(res.substring(0,4) == "ERROR") {
+                    document.getElementById("error").innerHTML = "<h3 style='text-align:center'>An error occured</h3><p>" + res.substring(5) + "</p>";
+                } else {                    
+                    document.getElementById("booknTable").innerHTML = res;                    
+                }
+            }
+        }
+
+        var e = document.getElementById("select")
+        var id = e.options[e.selectedIndex].id;
+        
+        xmlhttp.open("POST","checkout.php",true);
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlhttp.send("load=true&id=" + id);
+    }
+    
+    function deleteBook(id) {
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+          xmlhttp=new XMLHttpRequest();
+        }
+        else {
+          xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                var res = xmlhttp.responseText;                            
+                
+                if(res.substring(0,4) == "ERROR") {
+                    document.getElementById("error").innerHTML = "<h3 style='text-align:center'>An error occured</h3><p>" + res.substring(5) + "</p>";
+                } else {                    
+                    document.getElementById(res).className += "active";
+                    var btn = document.getElementById("btn" + res);
+                    btn.className = "btn btn-default";
+                    btn.disabled = true;
+                    btn.onclick = "";
+                }
+            }
+        }
+
+        xmlhttp.open("POST","checkout.php",true);
+        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xmlhttp.send("checkout=true&id=" + id);
+    }
+    
+    window.onload = loadUserBook();
+</script>

@@ -1,0 +1,93 @@
+<div class="jumbotron">
+  <h1 style="text-align:center;">Record</h1>
+  
+    <form class="form-horizontal" action="report.php" method="post">
+        <fieldset>
+            <div class="form-group">
+                <label for="select" class="col-lg-2 col-lg-offset-3 control-label">Client</label>
+                <div class="col-lg-2">
+                    <select class="form-control" id="select" onchange="getRecord()">
+                        <option id="1">Current</option>
+                        <option id="2">All</option>                      
+                    </select>                    
+                </div>
+                <button type="reset" class="btn btn-info" onclick="refreshSession()">Refresh</button>
+            </div>
+        </fieldset>            
+    </form>
+    
+    <table class="table table-striped table-hover ">
+        <thead>
+            <tr>
+                <th>Client</th>
+                <th>Suite</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Cancelled</th>
+                <th>Assisted by</th>
+                <th>Checked out</th>
+            </tr>
+          </thead>
+        <tbody id="clientRecord"></tbody>
+    </table> 
+    
+    <div id="error"></div>
+    
+</div>
+
+<script>
+        function getRecord() {
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+              xmlhttp=new XMLHttpRequest();
+            }
+            else {
+              xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                    var res = xmlhttp.responseText;                        
+
+                    if(res.substring(0,4) == "ERROR") {
+                        document.getElementById("error").innerHTML = "<h3 style='text-align:center'>An error occured</h3><p>" + res.substring(5) + "</p>";
+                    } else {                    
+                        document.getElementById("clientRecord").innerHTML = res;
+                    }
+                }
+            }
+
+            var e = document.getElementById("select");
+            var id = e.options[e.selectedIndex].id;
+            var type = (id === "1" ? "current" : "all");
+
+            xmlhttp.open("POST","report.php",true);
+            xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            xmlhttp.send("type=" + type);
+        }
+    
+        function refreshSession() {
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+              xmlhttp=new XMLHttpRequest();
+            }
+            else {
+              xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                    console.log("Session cache cleared");
+                    document.getElementById("error").innerHTML = xmlhttp.responseText;
+                }
+            }
+
+            xmlhttp.open("POST","report.php",true);
+            xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            xmlhttp.send("refresh=true");
+            
+            getRecord();
+        }
+    
+    window.onload = getRecord();
+</script>

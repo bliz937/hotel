@@ -1,0 +1,76 @@
+<?php
+require './res/php/people.php';
+require './res/php/suite.php';
+
+$booking = latestBooking((!isset($_POST["client"]) ? $_SESSION["userID"] : $_POST["client"]), $_POST["suite"]);
+
+if($booking === NULL) {
+    echo '<h1 style="color:orange;text-aling:center;">Error with retrieving latest booking</h1>';
+    return;
+}
+
+$client = $booking->CLIENT;
+$suite = $booking->SUITE;
+
+echo '
+<div class="jumbotron">
+    <h1 style="text-align:center;color:green;">Booking successful</h1>
+    <hr width="55%">
+    <h3 style="text-align:center;"><u>Record</u></h3><br>
+    
+    <form class="form-horizontal">
+        <fieldset>
+            <div class="form-group" style="text-align:center;">
+                <label fpr="bkClient" class="col-lg-6 control-label"><strong>Client</strong></label>
+                <div class="col-lg-5">                
+                    <label class="col-lg-3 control-label" id="bkClient">' . $client->NAME . ' ' . $client->SURNAME .'</label>
+                </div>
+            </div><hr width="25%">
+            
+            <div class="form-group" style="text-align:center;">
+                <label fpr="bkSuite" class="col-lg-6 control-label"><strong>Suite</strong></label>
+                <div class="col-lg-5">                
+                    <label class="col-lg-3 control-label" id="bkSuite">'. $suite->NAME .'</label>
+                </div>
+            </div><hr width="25%">
+            
+            <div class="form-group" style="text-align:center;">
+                <label fpr="bkFromDate" class="col-lg-6 control-label"><strong>From</strong></label>
+                <div class="col-lg-5">                
+                    <label class="col-lg-3 control-label" id="bkFromDate">'. $booking->STARTDATE .'</label>
+                </div>
+            </div><hr width="25%">
+            
+            <div class="form-group" style="text-align:center;">
+                <label fpr="bkToDate" class="col-lg-6 control-label"><strong>To</strong></label>
+                <div class="col-lg-5">                
+                    <label class="col-lg-3 control-label" id="bkToDate">'. $booking->ENDDATE .'</label>
+                </div>
+            </div><hr width="25%">
+            
+            <div class="form-group" style="text-align:center;">
+                <label fpr="bkDays" class="col-lg-6 control-label"><strong>Days</strong></label>
+                <div class="col-lg-5">                
+                    <label class="col-lg-3 control-label" id="bkDays">'. $booking->DAYS .'</label>
+                </div>
+            </div><hr width="25%">
+            
+            <div class="form-group" style="text-align:center;">
+                <label fpr="bkCost" class="col-lg-6 control-label"><strong>Cost</strong></label>
+                <div class="col-lg-5">                
+                    <label class="col-lg-3 control-label" id="bkCost">R'. $booking->COST .'</label>
+                </div>
+            </div><hr width="25%">
+            
+            <div class="form-group" style="text-align:center;">
+                <label fpr="bkRef" class="col-lg-6 control-label"><strong>Reference ID</strong></label>
+                <div class="col-lg-5">                
+                    <label class="col-lg-3 control-label" id="bkRef">'. $booking->ID .'</label>
+                </div>
+            </div><hr width="25%">
+        </fieldset>
+    </form>    
+            
+</div>';
+
+?>

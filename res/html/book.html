@@ -1,0 +1,238 @@
+<form class="form-horizontal" method="post" action="book.php">
+    <fieldset>
+        <legend>Booking</legend>
+
+        <?php if($_SESSION["userType"] === "agent"){ require './res/html/bookA.html'; } ?>                  
+
+        <div class="form-group">
+            <label for="inputSuite" class="col-lg-5 control-label">Suite</label>
+            <div class="col-lg-2">
+                <select class="form-control" id="inputSuite" name="suite" onchange="getFreeSuites(); calcCost();">
+                  <option value="1">Luxary</option>
+                  <option value="2">Standard</option>
+                </select>
+                <br>
+            </div>
+            <div class="col-lg-4">
+                <label fpr="freeSuites" class="col-lg-2 control-label">Available: </label>
+                <label class="col-lg-1 control-label" id="freeSuites"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="inputStartDate" class="col-lg-5 control-label">From</label>
+            <div class="col-lg-2">
+                <input class="form-control" id="inputStartDate" type="date" onchange="getFreeSuites(); calcCost();" name="fromDate">
+                <br>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="inputEndDate" class="col-lg-5 control-label">To</label>
+            <div class="col-lg-2">
+                <input class="form-control" id="inputEndDate" type="date" onchange="getFreeSuites(); calcCost()" name="toDate">
+                <br>
+            </div>
+        </div>
+        
+        <div class="form-group">            
+            <label fpr="stayDay" class="col-lg-5 control-label">Days </label>
+            <div class="col-lg-2">                
+                <label class="col-lg-1 control-label" id="stayDay"></label>
+            </div>            
+        </div
+        
+        <div class="form-group">            
+            <label fpr="stayPrice" class="col-lg-5 control-label">Cost </label>
+            <div class="col-lg-2">                
+                <label class="col-lg-1 control-label" id="stayPrice"></label>
+            </div>            
+        </div>
+        
+        <br>
+        <div class="form-group">
+            <div class="col-lg-1 col-lg-offset-5">                
+                <button type="submit" class="btn btn-info" id="bookButton">Submit</button>
+            </div>
+        </div>
+        
+      </fieldset>
+</form>
+    
+<div id="error"></div>
+
+    <script type="text/javascript">
+                var luxAmount = <?php echo $suites["Luxary"]->OPEN; ?>;
+                var staAmount = <?php echo $suites["Standard"]->OPEN; ?>;                
+                var luxCostPN = <?php echo $suites["Luxary"]->COSTPERN; ?>;
+                var staCostPN = <?php echo $suites["Standard"]->COSTPERN; ?>;
+                
+                document.onload = onLoadFn();
+                
+            function changeAvailability() {
+                var suite = document.getElementById("inputSuite");
+                var label = document.getElementById("freeSuites");
+                var se = "<strong style='color:";
+                var dsb = false;
+                var btnC = "btn btn-info";
+    
+                if(suite.value == "1") {
+                    se += color(luxAmount) + "'>" + luxAmount + "</strong>";
+                    label.innerHTML = se;
+                    
+                    if(luxAmount == 0) {
+                        dsb = true;
+                        btnC = "btn btn-default";
+                    }
+                                        
+                } else if(suite.value == "2") {
+                    se += color(staAmount) + "'>" + staAmount + "</strong>";
+                    label.innerHTML = se;
+                    
+                    if(staAmount == 0) {
+                        dsb = true;
+                        btnC = "btn btn-default";
+                    }
+                }                                
+                
+                var btn = document.getElementById("bookButton");                        
+                btn.disabled = dsb;
+                btn.className = btnC;
+            }
+
+            function color(val) {
+                if(val > 5) {
+                    return "green;";
+                } else if(val > 0) {
+                    return "orange;"   
+                } else {
+                    return "red;"   
+                }
+            }
+            
+            function onLoadFn() {
+                changeAvailability();
+                
+                var d = new Date();
+                document.getElementById("inputStartDate").value = d.getFullYear() + "-" + (d.getMonth() < 9 ? "0" + ( d.getMonth() + 1 ) : (d.getMonth() + 1)) + "-" + (d.getDate() < 10 ? "0" + d.getDate() : d.getDate());
+                document.getElementById("inputEndDate").value = d.getFullYear() + "-" + (d.getMonth() < 9 ? "0" + ( 1 + d.getMonth() ) : (d.getMonth() + 1)) + "-" + (d.getDate() < 10 ? "0" + (d.getDate() +1 ) : d.getDate() + 1);
+                
+                calcCost();
+            }
+            
+            function calcCost() {
+                var suite = document.getElementById("inputSuite");
+                var price = document.getElementById("stayPrice");
+                var dayStay = document.getElementById("stayDay");
+                var startDate = new Date(document.getElementById("inputStartDate").value);
+                var endDate = new Date(document.getElementById("inputEndDate").value);
+                var cost = 0;
+                var days = Math.round(Math.abs((endDate.getTime() - startDate.getTime())/(24*60*60*1000)));
+                
+                if(suite.value == "1") {
+                    cost = luxCostPN;
+                } else if(suite.value == "2") {
+                    cost = staCostPN;
+                } 
+                
+                price.innerHTML = "<strong style='color:green'>R" + (cost * days) + "</strong>";
+                dayStay.innerHTML = "<strong>" + days + "</strong>";
+            }
+            
+            function loadClients() {
+                var xmlhttp;
+                if (window.XMLHttpRequest) {
+                  xmlhttp=new XMLHttpRequest();
+                }
+                else {
+                  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                        var res = xmlhttp.responseText;                        
+
+                        if(res.substring(0,4) == "ERROR") {
+                            document.getElementById("error").innerHTML = "<h3 style='text-align:center'>An error occured</h3><p>" + res.substring(5) + "</p>";
+                        } else {                    
+                            document.getElementById("clientRecord").innerHTML = res;
+                        }
+                    }
+                }
+
+                var e = document.getElementById("selectClients")
+                var id = e.options[e.selectedIndex].id;
+
+                xmlhttp.open("POST","account.php",true);
+                xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                xmlhttp.send("id=" + id);
+            }
+        
+        function getFreeSuites() {
+            var from = document.getElementById("inputStartDate").value;
+            var to = document.getElementById("inputEndDate").value;  
+            var btn = document.getElementById("bookButton");
+            
+            if(new Date(from).getTime() > new Date(to).getTime()) {                
+                btn.disabled = true;
+                btn.className = "btn btn-default";
+                return;                
+            } 
+            
+            btn.disabled = false;
+            btn.className = "btn btn-info";
+            
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+              xmlhttp=new XMLHttpRequest();
+            }
+            else {
+              xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {                    
+                    var res = JSON.parse(xmlhttp.responseText);                        
+
+                    (res[0]["name"] == "Luxary" ? setOpenSuites(res[0],res[1]) : setOpenSuites(res[1],res[0]));
+
+                }
+            }
+
+            xmlhttp.open("POST","suitesAjax.php",true);
+            xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            xmlhttp.send("from=" + from + "&to=" + to);
+        }
+        
+        function setOpenSuites(luxary, standard) {
+            var suite = document.getElementById("inputSuite");
+            var label = document.getElementById("freeSuites");
+            var se = "<strong style='color:";
+            var dsb = false;
+            var btnC = "btn btn-info";
+
+            if(suite.value == "1") {
+                se += color(luxary["open"]) + "'>" + luxary["open"] + "</strong>";
+                label.innerHTML = se;
+
+                if(luxary["open"] == 0) {
+                    dsb = true;
+                    btnC = "btn btn-default";
+                }
+
+            } else if(suite.value == "2") {
+                se += color(standard["open"]) + "'>" + standard["open"] + "</strong>";
+                label.innerHTML = se;
+
+                if(standard["open"] == 0) {
+                    dsb = true;
+                    btnC = "btn btn-default";
+                }
+            }                                
+
+            var btn = document.getElementById("bookButton");                        
+            btn.disabled = dsb;
+            btn.className = btnC;   
+        }
+
+        </script>

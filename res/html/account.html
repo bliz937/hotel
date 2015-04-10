@@ -1,0 +1,40 @@
+<div class="jumbotron">
+    <h1 style="text-align:center;">Account history</h1>
+    <br>    
+    
+    <table class="table table-striped table-hover ">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Suite</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Cancelled</th>
+                <th>Assisted by</th>
+                <th>Checked out</th>
+            </tr>
+          </thead>
+        <tbody>
+        
+        <?php
+        foreach($bookings as $bkn) {
+
+            echo '
+            <tr>
+                <td>'. $bkn->ID .'</td>
+                <td>'. $bkn->SUITE->NAME .'</td>
+                <td>'. $bkn->STARTDATE .'</td>
+                <td>'. $bkn->ENDDATE .'</td>
+                <td>'. ($bkn->CANCELLED ? '<span style="color:orange;">Yes</span>' : '<span style="color:green;">No</span>') .'</td>
+                <td>'. ($bkn->AGENT->ID === NULL ? "Self" : $bkn->AGENT->NAME ).'</td>
+                <td>'. ($bkn->CHECKEDOUT === NULL ? ($bkn->CANCELLED ? '<span style="color:orange;">Cancelled</span>' : 'Still checked in') : $bkn->CHECKEDOUT ) .'</td>
+            </tr>';
+
+        }
+
+        ?>
+        
+      </tbody>
+    </table> 
+    
+</div>

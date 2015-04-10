@@ -1,0 +1,50 @@
+<!-- https://1000hz.github.io/bootstrap-validator/#validator -->
+<form class="form-horizontal" id="registerUserForm" data-toggle="validator" action="register.php" method="post">
+  <fieldset>
+    <legend>Register</legend>
+    <input hidden="true" type="text" value="r" name="rl">
+      
+    <div class="form-group">
+        <label class="col-lg-5 control-label" for="inputFName">First name</label>
+        <div class="col-lg-3">
+            <input required type="text" class="form-control" id="inputFName" name="FName" placeholder="First name">
+        </div>
+    </div>
+      
+    <div class="form-group">
+        <label class="col-lg-5 control-label" for="inputLName">Last name</label>
+        <div class="col-lg-3">
+        <input required type="text" class="form-control" id="inputLName" name="LName" placeholder="Last name">
+        </div>
+    </div>
+      
+    <div class="form-group">
+      <label for="inputEmail" class="col-lg-5 control-label">Email</label>
+      <div class="col-lg-3">
+        <input required type="email" class="form-control" id="inputEmail" name="Email" placeholder="Email" data-error="Enter a valid email address">
+           <div class="help-block with-errors"></div>
+      </div>
+    </div>
+      
+    <div class="form-group">
+      <label for="inputPassword" class="col-lg-5 control-label">Password</label>
+      <div class="col-lg-3">
+        <input required type="password" class="form-control" id="inputPassword" name="Password" placeholder="Password">        
+      </div>
+    </div>
+      
+    <div class="form-group">
+      <label for="inputConfirmPassword" class="col-lg-5 control-label">Confirm password</label>
+      <div class="col-lg-3">
+        <input type="password" class="form-control" id="inputConfirmPassword" placeholder="Confirm password" data-match="#inputPassword" data-match-error="The passwords must match" placeholder="Confirm">
+          <div class="help-block with-errors"></div>
+      </div>
+    </div>
+      
+    <div class="form-group">
+      <div class="col-lg-1 col-lg-offset-5">    
+        <button type="submit" class="btn btn-info">Register</button>
+      </div>
+    </div>
+  </fieldset>
+</form>
