@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Mar 31, 2015 at 10:04 AM
+-- Generation Time: Apr 13, 2015 at 11:14 AM
 -- Server version: 5.6.17-log
 -- PHP Version: 5.5.12
 
@@ -28,16 +28,16 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `booking` (
   `boo_ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `boo_StartDate` datetime NOT NULL,
-  `boo_EndDate` datetime NOT NULL,
+  `boo_StartDate` date NOT NULL,
+  `boo_EndDate` date NOT NULL,
   `sui_ID` int(10) unsigned NOT NULL,
   `ppl_ID` int(10) unsigned NOT NULL,
-  `ppl_IDAgent` int(10) unsigned NOT NULL,
+  `ppl_IDAgent` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`boo_ID`),
   KEY `sui_IDBook_idx` (`sui_ID`),
   KEY `ppl_IDClient_idx` (`ppl_ID`),
   KEY `ppl_IDBookAgent_idx` (`ppl_IDAgent`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -47,18 +47,18 @@ CREATE TABLE IF NOT EXISTS `booking` (
 
 CREATE TABLE IF NOT EXISTS `log` (
   `log_ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `log_StartDate` datetime NOT NULL,
-  `log_EndDate` datetime NOT NULL,
+  `log_StartDate` date NOT NULL,
+  `log_EndDate` date NOT NULL,
   `sui_ID` int(10) unsigned NOT NULL,
   `ppl_ID` int(10) unsigned NOT NULL,
-  `ppl_IDAgent` int(10) unsigned NOT NULL,
+  `ppl_IDAgent` int(10) unsigned DEFAULT NULL,
   `log_Cancelled` tinyint(1) NOT NULL DEFAULT '0',
-  `log_CheckedOut` datetime NOT NULL,
+  `log_CheckedOut` datetime DEFAULT NULL,
   PRIMARY KEY (`log_ID`),
   KEY `sui_ID_idx` (`sui_ID`),
   KEY `ppl_ID_idx` (`ppl_ID`),
   KEY `agentID_idx` (`ppl_IDAgent`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `people` (
   `ppl_Balance` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ppl_ID`),
   UNIQUE KEY `ppl_Email_UNIQUE` (`ppl_Email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -105,7 +105,15 @@ CREATE TABLE IF NOT EXISTS `suite` (
   `sui_CPN` decimal(10,0) unsigned NOT NULL,
   PRIMARY KEY (`sui_ID`),
   UNIQUE KEY `sui_Name_UNIQUE` (`sui_Name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `suite`
+--
+
+INSERT INTO `suite` (`sui_ID`, `sui_Name`, `sui_Available`, `sui_CPN`) VALUES
+(1, 'Luxary', 10, '10000'),
+(2, 'Standard', 20, '5000');
 
 --
 -- Constraints for dumped tables
@@ -115,17 +123,17 @@ CREATE TABLE IF NOT EXISTS `suite` (
 -- Constraints for table `booking`
 --
 ALTER TABLE `booking`
-  ADD CONSTRAINT `sui_IDBook` FOREIGN KEY (`sui_ID`) REFERENCES `suite` (`sui_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `ppl_IDBookAgent` FOREIGN KEY (`ppl_IDAgent`) REFERENCES `people` (`ppl_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `ppl_IDClient` FOREIGN KEY (`ppl_ID`) REFERENCES `people` (`ppl_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `ppl_IDBookAgent` FOREIGN KEY (`ppl_IDAgent`) REFERENCES `people` (`ppl_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `sui_IDBook` FOREIGN KEY (`sui_ID`) REFERENCES `suite` (`sui_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `log`
 --
 ALTER TABLE `log`
-  ADD CONSTRAINT `sui_ID` FOREIGN KEY (`sui_ID`) REFERENCES `suite` (`sui_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `agentIDLog` FOREIGN KEY (`ppl_IDAgent`) REFERENCES `people` (`ppl_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `ppl_ID` FOREIGN KEY (`ppl_ID`) REFERENCES `people` (`ppl_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `agentIDLog` FOREIGN KEY (`ppl_IDAgent`) REFERENCES `people` (`ppl_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `sui_ID` FOREIGN KEY (`sui_ID`) REFERENCES `suite` (`sui_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `payment`
